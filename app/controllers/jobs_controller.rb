@@ -1,50 +1,55 @@
 class JobsController < ApplicationController
-  before_action :find_job, only: [:show, :update,:edit, :destroy]
-  def index
-    @jobs = Job.all.order("created_at DESC")
-  end
+	before_action :find_job, only: [:show, :edit, :update, :destroy]
 
-  def create
-    @job = Job.new(jobs_params)
+	def index
+		if params[:category].blank?
+			@jobs = Job.all.order("created_at DESC")
+		else
+			@category_id = Category.find_by(name: params[:category]).id
+			@jobs = Job.where(category_id: @category_id).order("created_at DESC")
+		end
+	end
 
-    if @job.save
-      redirect_to @job
-    else 
-      render new_index_path
-    end
-  end
+	def show
+	end
 
-  def show
-    # @job = Job.All
-  end
+	def new
+		@job = Job.new
+	end
 
-  def update
-    if @job.update(jobs_params)
-      redirect_to @job
-    else 
-      render "Edit"
-    end
-  end
+	def create
+		@job = Job.new(jobs_params)
 
-  def edit 
-  end
+		if @job.save
+			redirect_to @job
+		else
+			render "New"
+		end
+	end
 
-  def new
-    @job = Job.new
-  end
+	def edit
+	end
 
-  def destroy
-    @job.destroy
-    redirect_to root_path
-  end
+	def update
+		if @job.update(jobs_params)
+			redirect_to @job
+		else
+			render "Edit"
+		end
+	end
 
-  private 
+	def destroy
+		@job.destroy
+		redirect_to root_path
+	end
 
-  def jobs_params
-    params.require(:job).permit(:company,:description,:title,:url)
-  end
+	private
 
-  def find_job
-    @job = Job.find(params[:id])
-  end
+	def jobs_params
+		params.require(:job).permit(:title, :description, :company, :url, :category_id)
+	end
+
+	def find_job
+		@job = Job.find(params[:id])
+	end
 end
