@@ -22,6 +22,7 @@ gem 'jquery-rails', '~> 4.3', '>= 4.3.3'
 gem 'annotate', '~> 2.7', '>= 2.7.3'
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'sqlite3'
 end
 
 group :development do
